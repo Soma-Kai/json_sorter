@@ -1,0 +1,25 @@
+POSITIONAL_ARGS=()
+TYPE="insetion"
+JSON_FILE="./test/users.json"
+OUTPUT_FILE="./output/sample.json"
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -type)  TYPE="$2"; shift; shift;;
+	-json)	JSON_FILE="$2"; shift; shift;;
+	-output)    OUTPUT_FILE="./output/$2"; shift; shift;;
+        --) shift;  POSITIONAL_ARGS+=("$@"); set --;;
+        -*) echo "[ERROR] Unknown option $1"; exit 1;;
+        *)  POSITIONAL_ARGS+=("$1"); shift;;
+    esac
+done
+set -- "${POSITIONAL_ARGS[@]}"  #// set $1, $2, ...
+unset POSITIONAL_ARGS
+
+touch tmp.txt
+echo ${TYPE} > tmp.txt
+echo ${JSON_FILE} >> tmp.txt
+echo ${OUTPUT_FILE} >> tmp.txt
+
+python3 ./src/main.py < tmp.txt
+
+rm tmp.txt
